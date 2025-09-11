@@ -1,3 +1,16 @@
+valeur_carte = dict{
+	'2':2,
+	'3':3,
+	'4':4,
+	'5':5,
+	'6':6,
+	'7':7,
+	'8':8,
+	'9':9,
+	'10':10,
+	'11':11,
+}
+
 Jbase = [
 
 [[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None], [ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None], #4
@@ -19,3 +32,15 @@ Jbase = [
 [[ 'R', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None], [ 'R', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None], #20
 
 ]
+
+def calculer_main(main:list):
+	soft = 1
+	valeur_main = 0
+	for carte in main:
+		val = valeur_carte[carte]
+		if val = 11:
+			soft += 1
+			valeur_main += val
+		else:
+			valeur_main += val
+	return (valeur_main, soft)
