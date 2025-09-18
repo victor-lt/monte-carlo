@@ -1,19 +1,3 @@
-valeur_carte = {
-	'2':2,
-	'3':3,
-	'4':4,
-	'5':5,
-	'6':6,
-	'7':7,
-	'8':8,
-	'9':9,
-	'10':10,
-	'K':10,
-	'Q':10,
-	'J':10,
-	'A':11,
-}
-
 Jbase = [
 
 [[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None], [ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None]], #4
@@ -36,15 +20,14 @@ Jbase = [
 
 ]
 
-def calculer_main(main:list):
-	soft = 1
-	valeur_main = 0
-	for carte in main:
-		val = valeur_carte[carte]
-		if val == 11:
-			soft += 1
-			valeur_main += val
-		else:
-			valeur_main += val
-	return (valeur_main, soft)
+def piocher(main, sabot):
+    carte = sabot.pop[0]
+    (n, soft) = main
+    if n + carte > 21:
+        if soft <= 0: #Si la main n'a pas d'as
+            return (0,0) #Convention: si la main[0] = 0 alors la main est bust
+        else:
+            return (main[0] + carte - 10, soft - 1)
 
+def gagnant(main_joueur, main_croupier): #à terminer
+    return None
