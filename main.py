@@ -20,19 +20,15 @@ Jbase = [
 
 ]
 
-def draw_card(main, sabot):
-    carte = sabot.pop[0]
-    (n, soft) = main #couple : (valeur de la main, nombre d'as)
-    if n + carte > 21:
-        if soft <= 0: #Si la main n'a pas d'as
-            return (0,0) #Convention: si la main[0] = 0 alors la main est bust
-        else:
-            return (main[0] + carte - 10, soft - 1)
+def play-round(profile, bet)
+    player-hand = [draw(card), draw(card)] #draw first 2 cards
+    dealer-hand = [draw(card), draw(card)]
+    '''
+        -----add insurance management-----
+    '''
+    if check-split(player_hand): #return true if the player split, false if not
+        return split(player-hand, dealer-hand)
+    player-hand = player-gameplay(player-gameplay) #return the hand of the player at the end of his turn
+    return bet*is-winner(player-hand, dealer-hand) #is-winner return 1 or -1 (HAVE TO ADD INSURANCE MONEY)
 
-def result(player_hand, dealer_hand): 
-    if main_joueur > main croupier:
-        return 'won'
-    elif main_joueur < main_croupier:
-        return 'lost'
-    else:
-        return 'push'
+
