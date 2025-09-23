@@ -20,14 +20,19 @@ Jbase = [
 
 ]
 
-def piocher(main, sabot):
+def draw_card(main, sabot):
     carte = sabot.pop[0]
-    (n, soft) = main
+    (n, soft) = main #couple : (valeur de la main, nombre d'as)
     if n + carte > 21:
         if soft <= 0: #Si la main n'a pas d'as
             return (0,0) #Convention: si la main[0] = 0 alors la main est bust
         else:
             return (main[0] + carte - 10, soft - 1)
 
-def gagnant(main_joueur, main_croupier): #à terminer
-    return None
+def result(player_hand, dealer_hand): 
+    if main_joueur > main croupier:
+        return 'won'
+    elif main_joueur < main_croupier:
+        return 'lost'
+    else:
+        return 'push'
