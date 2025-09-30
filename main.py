@@ -30,5 +30,3 @@ def play-round(profile, bet)
         return split(player-hand, dealer-hand)
     player-hand = player-gameplay(player-gameplay) #return the hand of the player at the end of his turn
     return bet*is-winner(player-hand, dealer-hand) #is-winner return 1 or -1 (HAVE TO ADD INSURANCE MONEY)
-
-
