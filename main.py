@@ -1,119 +1,229 @@
-Jbase = [
+import random
 
-[[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None], [ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None]], #4
-[[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None], [ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None]], #5
-[[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None], [ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None]], #6
-[[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None], [ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None]], #7
-[[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None], [ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None]], #8
-[[ 'T', None, None, None],[ 'D', None, None, None],[ 'D', None, None, None],[ 'D', None, None, None],[ 'T', None, None, None], [ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None]], #9
-[[ 'D', None, None, None],[ 'D', None, None, None],[ 'D', None, None, None],[ 'D', None, None, None],[ 'D', None, None, None], [ 'D', None, None, None],[ 'D', None, None, None],[ 'D', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None]], #10
-[[ 'D', None, None, None],[ 'D', None, None, None],[ 'D', None, None, None],[ 'D', None, None, None],[ 'D', None, None, None], [ 'D', None, None, None],[ 'D', None, None, None],[ 'D', None, None, None],[ 'D', None, None, None],[ 'T', None, None, None]], #11
-[[ 'T', None, None, None],[ 'T', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None], [ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None]], #12
-[[ 'R', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None], [ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None]], #13
-[[ 'T', None, None, None],[ 'T', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None], [ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None]], #14
-[[ 'R', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None], [ 'T', None, None, None],[ 'R', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None]], #15
-[[ 'R', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None], [ 'T', None, None, None],[ 'R', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None],[ 'T', None, None, None]], #16
-[[ 'R', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None], [ 'R', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None]], #17
-[[ 'R', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None], [ 'R', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None]], #18
-[[ 'R', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None], [ 'R', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None]], #19
-[[ 'R', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None], [ 'R', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None],[ 'R', None, None, None]], #20
+basic_strategy = [
+
+[[ 'H', None],[ 'H', None],[ 'H', None],[ 'H', None],[ 'H', None], [ 'H', None],[ 'H', None],[ 'H', None],[ 'H', None],[ 'H', None]], #4
+[[ 'H', None],[ 'H', None],[ 'H', None],[ 'H', None],[ 'H', None], [ 'H', None],[ 'H', None],[ 'H', None],[ 'H', None],[ 'H', None]], #5
+[[ 'H', None],[ 'H', None],[ 'H', None],[ 'H', None],[ 'H', None], [ 'H', None],[ 'H', None],[ 'H', None],[ 'H', None],[ 'H', None]], #6
+[[ 'H', None],[ 'H', None],[ 'H', None],[ 'H', None],[ 'H', None], [ 'H', None],[ 'H', None],[ 'H', None],[ 'H', None],[ 'H', None]], #7
+[[ 'H', None],[ 'H', None],[ 'H', None],[ 'H', None],[ 'H', None], [ 'H', None],[ 'H', None],[ 'H', None],[ 'H', None],[ 'H', None]], #8
+[[ 'H', None],[ 'D', None],[ 'D', None],[ 'D', None],[ 'H', None], [ 'H', None],[ 'H', None],[ 'H', None],[ 'H', None],[ 'H', None]], #9
+[[ 'D', None],[ 'D', None],[ 'D', None],[ 'D', None],[ 'D', None], [ 'D', None],[ 'D', None],[ 'D', None],[ 'H', None],[ 'H', None]], #10
+[[ 'D', None],[ 'D', None],[ 'D', None],[ 'D', None],[ 'D', None], [ 'D', None],[ 'D', None],[ 'D', None],[ 'D', None],[ 'H', None]], #11
+[[ 'H', 'H'],[ 'H', 'H'],[ 'S', 'H'],[ 'S', 'H'],[ 'S', 'H'], [ 'H', 'H'],[ 'H', 'H'],[ 'H', 'H'],[ 'H', 'H'],[ 'H', 'H']], #12
+[[ 'S', 'H'],[ 'S', 'H'],[ 'S', 'H'],[ 'S', 'D'],[ 'S', 'D'], [ 'H', 'H'],[ 'H', 'H'],[ 'H', 'H'],[ 'H', 'H'],[ 'H', 'H']], #13
+[[ 'H', 'H'],[ 'H', 'H'],[ 'S', 'H'],[ 'S', 'D'],[ 'S', 'D'], [ 'H', 'H'],[ 'H', 'H'],[ 'H', 'H'],[ 'H', 'H'],[ 'H', 'H']], #14
+[[ 'S', 'H'],[ 'S', 'H'],[ 'S', 'D'],[ 'S', 'D'],[ 'S', 'D'], [ 'H', 'H'],[ 'S', 'H'],[ 'H', 'H'],[ 'H', 'H'],[ 'H', 'H']], #15
+[[ 'S', 'H'],[ 'S', 'H'],[ 'S', 'D'],[ 'S', 'D'],[ 'S', 'D'], [ 'H', 'H'],[ 'S', 'H'],[ 'H', 'H'],[ 'H', 'H'],[ 'H', 'H']], #16
+[[ 'S', 'H'],[ 'S', 'D'],[ 'S', 'D'],[ 'S', 'D'],[ 'S', 'D'], [ 'S', 'H'],[ 'S', 'H'],[ 'S', 'H'],[ 'S', 'H'],[ 'S', 'H']], #17
+[[ 'S', 'Ds'],[ 'S', 'Ds'],[ 'S', 'Ds'],[ 'S', 'Ds'],[ 'S', 'Ds'], [ 'S', 'S'],[ 'S', 'S'],[ 'S', 'H'],[ 'S', 'H'],[ 'S', 'H']], #18
+[[ 'S', 'S'],[ 'S', 'S'],[ 'S', 'S'],[ 'S', 'S'],[ 'S', 'Ds'], [ 'S', 'S'],[ 'S', 'S'],[ 'S', 'S'],[ 'S', 'S'],[ 'S', 'S']], #19
+[[ 'S', 'S'],[ 'S', 'S'],[ 'S', 'S'],[ 'S', 'S'],[ 'S', 'S'], [ 'S', 'S'],[ 'S', 'S'],[ 'S', 'S'],[ 'S', 'S'],[ 'S', 'S']], #20
 
 ]
 
-#---------- OVERHEAD CODE IS USELESS FOR NOW ----------
+basic_strategy_splits = [
 
-prandom = {"name": "random", 'counted': 0} #player who plays randomly
-#rules = [split after aces, split after split, hit on soft 17, deck number, penetration (0-1 ratio) ] all bools except last one
-basic_rules = [False, True, True, 8, .6]
+[[True], [True], [True], [True], [True], [True], [False], [False], [False], [False]], #22
+[[True], [True], [True], [True], [True], [True], [False], [False], [False], [False]], #33
+[[False], [False], [False], [True], [True], [False], [False], [False], [False], [False]], #44
+[[False], [False], [False], [False], [False], [False], [False], [False], [False], [False]], #55
+[[True], [True], [True], [True], [True], [False], [False], [False], [False], [False]], #66
+[[True], [True], [True], [True], [True], [True], [False], [False], [False], [False]], #77
+[[True], [True], [True], [True], [True], [True], [True], [True], [True], [True]], #88
+[[True], [True], [True], [True], [True], [False], [True], [True], [False], [False]], #99
+[[False], [False], [False], [False], [False], [False], [False], [False], [False], [False]], #TT
+[[True], [True], [True], [True], [True], [True], [True], [True], [True], [True]], #AA
 
-'''draw_card(): function which both return the value of the card that has been drawn and add it to the hand 
-of the player while readjusting the best value possible for this hand (eg. if player has 26
-but has an ace, he will use the power of the ace (which is to have both the value 11 or 1) to
-lower its hand value to 16 to not be busted)'''
+]
 
-def draw_card(shoe, hand):     card = shoe.pop()
-    if card == 11:
-        hand[1] += 1
-    if hand[0] + card > 21:
-        if hand[1] >= 1:
-            hand[0] -= 10
-            hand[1] = 1
-    return card
+betting_strat = []
 
-'''returns 0 if player has lost, 1 if its a push (both the player and dealer have same value) or 2 if the player won.
-The integer, multiplied with the bet value will return what the player gets at the end of his hand.
-(0 if he lost, same as his bet if its a push, double his bet if he won)'''
-def has_player_won(player, dealer):
-    if player > 21:
-        return 0
-    elif dealer > 21:
-        return 2
-    elif player > dealer:
-        return 2
-    elif player == dealer:
-        return 1
-    else:
-        return 0
+#####===========================================================#####
 
-#this function manage most of what happen during a hand: drawing card, as for decisions of the player, check for result.
-def play_hand(player, rules, shoe):
-    
-    phand = [0, 0, False] #hand = (value, ace number, is it a pair)
-    dhand = [0, 0]
+class Blackjack:
+	def __init__(self, num_decks=6, deck_penetration=0.6, dealer_hits_soft_17=False, split_after_split=True, split_after_aces=True):
+		self.num_decks = num_decks
+		self.deck_penetration = deck_penetration
+		self.dealer_hits_soft_17 = dealer_hits_soft_17
+		self.split_after_split = split_after_split
+		self.split_after_aces = split_after_aces
+		self.shoe = self.initialize_shoe()
+		self.bankroll = 0
+		self.player = [basic_strategy, basic_strategy_splits, betting_strat]
+		self.dealer_hand = [0, 0]
+		self.hands = []
+		self.starting_num_hands = 2
+		self.max_num_hands = 6 #TO BE CHANGED
 
-    card1 = draw_card(phand, shoe)
-    card2 = draw_card(phand, shoe)
+	def initialize_shoe(self):
+		shoe = []
+		for _ in range(self.num_decks):
+			for value in range(1, 14):  # 1 to 13
+				if value > 10:
+					shoe.append(10)  # 10, J, Q, K
+				elif value == 1:
+					shoe.append(11)  # Ace is considered 11
+				else:
+					shoe.append(value)
+		random.shuffle(shoe)
+		return shoe
 
-    if card1 == card2:
-        phand[2] = True
+	def draw_card(self, hand_index):
 
-    draw_card(dhand[0], shoe[0])
-    draw_card(dhand, shoe)
+		card = self.shoe.pop()
 
-    player_time(player, phand, dhand, rules)
+		if card == 11: #update ace count
+			self.hands[hand_index][1] += 1
 
-    return has_player_won(phand[0], dhand[0])
+		# adjust the hand value for encoding
+		if self.hands[hand_index][0] + card > 21:
+			if self.hands[hand_index][1] > 0:
+				self.hands[hand_index][0] += card - 10
+				self.hands[hand_index][1] -= 1
+			else:
+				self.hands[hand_index][0] = 100
+		else:
+			self.hands[hand_index][0] += card
+		print('le joueur pioche un', card)
+		print('la main devient :', self.hands[hand_index])
+		return card
 
-#init and shuffle and return a shoe
-def init_shoe(shoe_nb):
-    shoe = []
-    for i in range(shoe_nb*52):
-        j = i%13
-        if j == 0:
-            shoe.append(11)
-        elif j < 9:
-            shoe.append(j)
-        elif j >= 9:
-            shoe.append(10)
+	def draw_card_dealer(self):
 
-    #apply shuffle function to shoe
-    return shoe
+		card = self.shoe.pop()
 
-#return what the player will bet.
-def choose_bet(player):
-    if player['name'] == 'random':
-        return 1
+		if card == 11: #update ace count
+			self.dealer_hand[1] += 1
 
-#this function will call the play_hand function and will play as much as it is allowed by the rules in the same shoe.
-def play_shoe(player, rules):
-    shoe = init_shoe(rules[3])
-    bankroll = 0
-    while len(shoe) >= (1-rules[4])*52:
-        bet = choose_bet(player)
-        bankroll += bet*play_hand(player, rules, shoe)
-    return bankroll
+		# adjust the hand value for encoding
+		if self.dealer_hand[0] + card > 21:
+			if self.dealer_hand[1] > 0:
+				self.dealer_hand[0] += card - 10
+			else:
+				self.dealer_hand[0] = 100 #100 means bust
+		else:
+			self.dealer_hand[0] += card
+		print('le dealer pioche un', card)
+		return card
 
-#function which change the hand of the player based on its strategy
-def player_time(player, phand, dhand, rules):
-    pass
+	def bet(self):
+		return 1 #NEEDS TO BE CHANGED
 
-'''this function will call the play_shoe function a number of time which is specified.
-and return what the player has won (or lost if its negative)'''
-def interface(player, shoe_nb, rules):
-    bankroll = 0
-    for i in range(shoe_nb):
-        bankroll += play_shoe(player, rules)
-    return bankroll
+	def deal_newhand(self, bet):
+		self.hands.append([0, 0, False, bet]) #value, ace_count, splittable, bet
+		index = len(self.hands) - 1
+		if self.draw_card(index) == self.draw_card(index):
+			self.hands[index][2] = True
+			print('il y a split')
+
+	def check_blackjack(self, hand_index):
+		if self.hands[hand_index][0] == 21:
+			self.hands[hand_index][0] = -2 # -2 means blackjack
+
+	def deal_dealer(self):
+		self.draw_card_dealer()
+
+	def split_hand(self, hand_index, paired):
+		self.hands[hand_index][0] = paired
+		self.hands[hand_index][1] //= 2
+
+		self.hands.insert(hand_index + 1, self.hands[hand_index].copy())
+
+		if self.split_after_split == True: #if split allowed
+			if self.split_after_aces == True or self.hands[hand_index][0] != 11:
+				self.hands[hand_index][2] == True
+				self.hands[hand_index + 1][2] == True
+			else:
+				self.hands[hand_index][2] == False
+				self.hands[hand_index + 1][2] == False
+		else:
+			self.hands[hand_index][2] == False
+			self.hands[hand_index + 1][2] == False
+
+		self.draw_card(hand_index)
+		self.draw_card(hand_index + 1)
+
+	def player_action(self, hand_index):
+
+		print('la main est :', self.hands[hand_index])
+
+		if self.hands[hand_index][0] > 0: # removes blackjack and bust cases
+
+			soft = 1 if self.hands[hand_index][1] > 0 else 0
+			dealer_index = self.dealer_hand[0] - 2
+
+			if self.hands[hand_index][2] == True:
+
+				if self.hands[hand_index][1] > 0: # pair of aces case
+					paired = 11
+				else:
+					paired = self.hands[hand_index][0] // 2
+
+				if self.player[1][paired - 2][dealer_index][0]:
+					self.split_hand(hand_index, paired)
+					print('SPLIT')
+
+			if self.hands[hand_index][0] <= 20 and self.player[0][self.hands[hand_index][0] - 4][dealer_index][soft] == 'D': # double action
+				self.draw_card(hand_index)
+				self.hands[hand_index][3] *= 2
+				print('DOUBLE')
+			else:
+				while self.hands[hand_index][0] <= 20 and self.player[0][self.hands[hand_index][0] - 4][dealer_index][soft] == 'H': #keep hitting until player stand
+					self.draw_card(hand_index)
+					soft = 1 if self.hands[hand_index][1] > 0 else 0
+					print('HIT')
+
+	def dealer_action(self):
+
+		while self.dealer_hand[0] < 17 or self.dealer_hits_soft_17 and self.dealer_hand[1] > 0 and self.dealer_hand[0] == 17:
+			self.draw_card_dealer()
+			print('dealer hand :', self.dealer_hand)
+
+	def check_winner(self, hand_index):
+		hand_value = self.hands[hand_index][0]
+		dealer_value = self.dealer_hand[0]
+
+		if hand_value == -2:
+			return 1.5
+		elif hand_value == 100:
+			return -1
+		elif dealer_value == 100 or hand_value > dealer_value:
+			return 1
+		elif dealer_value == hand_value:
+			return 0
+		else:
+			return -1
 
 
-print(interface(prandom, 8, basic_rules))
+	def play_round(self):
+
+		self.dealer_hand = [0, 0] #reset table
+		self.hands = []
+
+		for hand_index in range(self.starting_num_hands): #deal player
+			self.deal_newhand(self.bet())
+			self.check_blackjack(hand_index)
+
+		self.deal_dealer()
+
+		for hand_index in range(len(self.hands)):
+			self.player_action(hand_index)
+
+		self.dealer_action()
+
+		for hand_index in range(len(self.hands)):
+			self.bankroll += self.hands[hand_index][3] * self.check_winner(hand_index)
+			print('tu as gagné : ', self.hands[hand_index][3] * self.check_winner(hand_index))
+
+	def play_shoe(self, number_of_hands):
+		for _ in range(number_of_hands):
+			if len(self.shoe) < (1 - self.deck_penetration) * (self.num_decks * 52):
+				self.shoe = self.initialize_shoe()  # Reshuffle if penetration is reached
+				print('reshuffle')
+			self.play_round()
+
+if __name__ == '__main__':
+	game = Blackjack(num_decks=6, deck_penetration=0.5, dealer_hits_soft_17=False)
+	game.play_shoe(number_of_hands=1)
+	print("Final Bankroll:", game.bankroll)
