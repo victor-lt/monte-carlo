@@ -1,5 +1,7 @@
 import random
 
+#TO DO LIST: self.ask_insurance(), check well working of self.check_blackjack_dealer()
+
 basic_strategy = [
 
 [[ 'H', None],[ 'H', None],[ 'H', None],[ 'H', None],[ 'H', None], [ 'H', None],[ 'H', None],[ 'H', None],[ 'H', None],[ 'H', None]], #4
@@ -52,6 +54,7 @@ class Blackjack:
 		self.bankroll = 0
 		self.player = [basic_strategy, basic_strategy_splits, betting_strat]
 		self.dealer_hand = [0, 0]
+		self.hole_card = 0
 		self.hands = []
 		self.starting_num_hands = 2
 		self.max_num_hands = 6 #TO BE CHANGED
@@ -120,6 +123,17 @@ class Blackjack:
 	def check_blackjack(self, hand_index):
 		if self.hands[hand_index][0] == 21:
 			self.hands[hand_index][0] = -2 # -2 means blackjack
+			return True
+		else:
+			return False
+
+	def check_blackjack_dealer(self):
+		if self.dealer_hand[0] == 11:
+			self.ask_insurance()
+			if self.hole_card() == 10:
+				for i in range(len(self.hands)):
+					if not self.check_blackjack(i):
+						self.hands[hand_index][0] == 100
 
 	def deal_dealer(self):
 		self.draw_card_dealer()
