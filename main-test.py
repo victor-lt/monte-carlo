@@ -110,6 +110,7 @@ class Blackjack:
 				self.dealer_hand[0] = 100 #100 means bust
 		else:
 			self.dealer_hand[0] += newcard
+		print('le dealer pioche un', newcard)
 		return newcard
 
 	def bet(self):
@@ -120,6 +121,7 @@ class Blackjack:
 		index = len(self.hands) - 1
 		if self.draw_card(index) == self.draw_card(index):
 			self.hands[index][2] = True
+			print('il y a split')
 
 	def ask_insurance(self):
 		for hand_index in range(len(self.hands)):
@@ -167,6 +169,7 @@ class Blackjack:
 
 	def player_action(self, hand_index):
 
+		print('la main est :', self.hands[hand_index])
 
 		if self.hands[hand_index][0] > 0: # removes blackjack and bust cases
 
@@ -182,14 +185,17 @@ class Blackjack:
 
 				if self.player[1][paired - 2][dealer_index][0]:
 					self.split_hand(hand_index, paired)
+					print('SPLIT')
 
 			if self.hands[hand_index][0] <= 20 and self.player[0][self.hands[hand_index][0] - 4][dealer_index][soft] == 'D': # double action
 				self.draw_card(hand_index)
 				self.hands[hand_index][3] *= 2
+				print('DOUBLE')
 			else:
 				while self.hands[hand_index][0] <= 20 and self.player[0][self.hands[hand_index][0] - 4][dealer_index][soft] == 'H': #keep hitting until player stand
 					self.draw_card(hand_index)
 					soft = 1 if self.hands[hand_index][1] > 0 else 0
+					print('HIT')
 
 	def dealer_action(self):
 
@@ -197,6 +203,7 @@ class Blackjack:
 
 		while self.dealer_hand[0] < 17 or self.dealer_hits_soft_17 and self.dealer_hand[1] > 0 and self.dealer_hand[0] == 17:
 			self.draw_card_dealer(None)
+			print('dealer hand :', self.dealer_hand)
 
 	def check_winner(self, hand_index):
 		hand_value = self.hands[hand_index][0]
@@ -233,11 +240,13 @@ class Blackjack:
 
 		for hand_index in range(len(self.hands)):
 			self.bankroll += self.hands[hand_index][3] * self.check_winner(hand_index)
+			print('tu as gagné : ', self.hands[hand_index][3] * self.check_winner(hand_index))
 
 	def play_shoe(self, number_of_hands):
 		for _ in range(number_of_hands):
 			if len(self.shoe) < (1 - self.deck_penetration) * (self.num_decks * 52):
 				self.shoe = self.initialize_shoe()  # Reshuffle if penetration is reached
+				print('reshuffle')
 			self.play_round()
 
 if __name__ == '__main__':
