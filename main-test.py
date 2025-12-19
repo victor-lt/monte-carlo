@@ -106,6 +106,7 @@ class Blackjack:
 		if self.dealer_hand[0] + newcard > 21:
 			if self.dealer_hand[1] > 0:
 				self.dealer_hand[0] += newcard - 10
+				self.dealer_hand[1] -= 1
 			else:
 				self.dealer_hand[0] = 100 #100 means bust
 		else:
@@ -251,5 +252,5 @@ class Blackjack:
 
 if __name__ == '__main__':
 	game = Blackjack(num_decks=6, deck_penetration=0.5, dealer_hits_soft_17=False)
-	game.play_shoe(number_of_hands=100000)
+	game.play_shoe(number_of_hands=10)
 	print("Final Bankroll:", game.bankroll)

@@ -104,6 +104,7 @@ class Blackjack:
 		if self.dealer_hand[0] + newcard > 21:
 			if self.dealer_hand[1] > 0:
 				self.dealer_hand[0] += newcard - 10
+				self.dealer_hand[1] -= 1
 			else:
 				self.dealer_hand[0] = 100 #100 means bust
 		else:
@@ -111,7 +112,7 @@ class Blackjack:
 		return newcard
 
 	def bet(self):
-		return 1 #NEEDS TO BE CHANGED
+		return 2 #NEEDS TO BE CHANGED, MUST BE PAIR (for insurance betting)
 
 	def deal_newhand(self, bet):
 		self.hands.append([0, 0, False, bet]) #value, ace_count, splittable, bet
@@ -120,9 +121,10 @@ class Blackjack:
 			self.hands[index][2] = True
 
 	def ask_insurance(self):
+		self.insurance_bet = 0
 		for hand_index in range(len(self.hands)):
 			if self.player[3] == True:
-				self.insurance_bet += self.hands[hand_index][3]
+				self.insurance_bet += self.hands[hand_index][3]//2
 
 	def check_blackjack(self, hand_index):
 		if self.hands[hand_index][0] == 21:
@@ -136,8 +138,13 @@ class Blackjack:
 			self.ask_insurance()
 			if self.hole_card == 10:
 				for hand_index in range(len(self.hands)):
-					if not self.check_blackjack(hand_index):
+
+					if not self.check_blackjack(hand_index): #bust non blackjack hand
 						self.hands[hand_index][0] == 100
+
+					self.bankroll += self.insurance_bet
+			else:
+				self.bankroll -= self.insurance_bet
 
 	def deal_dealer(self):
 		self.draw_card_dealer(None)
@@ -171,7 +178,7 @@ class Blackjack:
 			soft = 1 if self.hands[hand_index][1] > 0 else 0
 			dealer_index = self.dealer_hand[0] - 2
 
-			if self.hands[hand_index][2] == True:
+			if self.hands[hand_index][2] == True and len(self.hands) < self.max_num_hands: #if split is allowed
 
 				if self.hands[hand_index][1] > 0: # pair of aces case
 					paired = 11
@@ -233,10 +240,14 @@ class Blackjack:
 			self.bankroll += self.hands[hand_index][3] * self.check_winner(hand_index)
 
 	def play_shoe(self, number_of_hands):
-		for _ in range(number_of_hands):
+		for i in range(number_of_hands):
 			if len(self.shoe) < (1 - self.deck_penetration) * (self.num_decks * 52):
 				self.shoe = self.initialize_shoe()  # Reshuffle if penetration is reached
 			self.play_round()
+
+			print(f'{i/number_of_hands*100:.2f}% | hands :{i}/{number_of_hands}', end="\r")
+
+
 
 if __name__ == '__main__':
 	game = Blackjack(num_decks=6, deck_penetration=0.5, dealer_hits_soft_17=False)
