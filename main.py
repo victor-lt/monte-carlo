@@ -88,8 +88,6 @@ class Blackjack:
 				self.hands[hand_index][0] = 100
 		else:
 			self.hands[hand_index][0] += card
-		print('le joueur pioche un', card)
-		print('la main devient :', self.hands[hand_index])
 		return card
 
 	def draw_card_dealer(self, card):
@@ -223,7 +221,7 @@ class Blackjack:
 			self.deal_newhand(self.bet())
 			self.check_blackjack(hand_index)
 
-		self.deal_dealer()
+		self.deal_dealer() #deal dealer
 		self.check_blackjack_dealer()
 
 		for hand_index in range(len(self.hands)):
