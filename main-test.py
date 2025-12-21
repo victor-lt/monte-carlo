@@ -44,7 +44,7 @@ betting_strat = []
 #####===========================================================#####
 
 class Blackjack:
-	def __init__(self, num_decks=6, deck_penetration=0.6, dealer_hits_soft_17=False, split_after_split=True, split_after_aces=True):
+	def __init__(self, num_decks=6, deck_penetration=0.6, dealer_hits_soft_17=False, split_after_split=True, split_after_aces=False):
 		self.num_decks = num_decks
 		self.deck_penetration = deck_penetration
 		self.dealer_hits_soft_17 = dealer_hits_soft_17
@@ -88,8 +88,7 @@ class Blackjack:
 				self.hands[hand_index][0] = 100
 		else:
 			self.hands[hand_index][0] += card
-		print('le joueur pioche un', card)
-		print('la main devient :', self.hands[hand_index])
+		print('Pioche :', card)
 		return card
 
 	def draw_card_dealer(self, card):
@@ -111,23 +110,26 @@ class Blackjack:
 				self.dealer_hand[0] = 100 #100 means bust
 		else:
 			self.dealer_hand[0] += newcard
-		print('le dealer pioche un', newcard)
+		print('Pioche :', newcard)
 		return newcard
 
 	def bet(self):
-		return 1 #NEEDS TO BE CHANGED
+		return 2 #NEEDS TO BE CHANGED, MUST BE PAIR (for insurance betting)
 
 	def deal_newhand(self, bet):
 		self.hands.append([0, 0, False, bet]) #value, ace_count, splittable, bet
 		index = len(self.hands) - 1
 		if self.draw_card(index) == self.draw_card(index):
 			self.hands[index][2] = True
-			print('il y a split')
+
+		print('Le joueur commence avec :', self.hands)
+
 
 	def ask_insurance(self):
+		self.insurance_bet = 0
 		for hand_index in range(len(self.hands)):
 			if self.player[3] == True:
-				self.insurance_bet += self.hands[hand_index][3]
+				self.insurance_bet += self.hands[hand_index][3]//2
 
 	def check_blackjack(self, hand_index):
 		if self.hands[hand_index][0] == 21:
@@ -140,13 +142,20 @@ class Blackjack:
 		if self.dealer_hand[0] == 11:
 			self.ask_insurance()
 			if self.hole_card == 10:
+				print('Blackjack du dealer!')
 				for hand_index in range(len(self.hands)):
-					if not self.check_blackjack(hand_index):
+
+					if not self.check_blackjack(hand_index): #bust non blackjack hand
 						self.hands[hand_index][0] == 100
+
+					self.bankroll += self.insurance_bet
+			else:
+				self.bankroll -= self.insurance_bet
 
 	def deal_dealer(self):
 		self.draw_card_dealer(None)
 		self.hole_card = self.shoe.pop()
+		print('Le dealer a :', self.dealer_hand)
 
 	def split_hand(self, hand_index, paired):
 		self.hands[hand_index][0] = paired
@@ -170,14 +179,15 @@ class Blackjack:
 
 	def player_action(self, hand_index):
 
-		print('la main est :', self.hands[hand_index])
 
 		if self.hands[hand_index][0] > 0: # removes blackjack and bust cases
 
 			soft = 1 if self.hands[hand_index][1] > 0 else 0
 			dealer_index = self.dealer_hand[0] - 2
 
-			if self.hands[hand_index][2] == True:
+			if self.hands[hand_index][2] == True and len(self.hands) < self.max_num_hands: #if split is allowed
+
+				print('Split ?')
 
 				if self.hands[hand_index][1] > 0: # pair of aces case
 					paired = 11
@@ -185,18 +195,21 @@ class Blackjack:
 					paired = self.hands[hand_index][0] // 2
 
 				if self.player[1][paired - 2][dealer_index][0]:
+					print('split oui')
 					self.split_hand(hand_index, paired)
-					print('SPLIT')
+					print('La nouvelle main est :', self.hands[hand_index])
 
 			if self.hands[hand_index][0] <= 20 and self.player[0][self.hands[hand_index][0] - 4][dealer_index][soft] == 'D': # double action
+				print('Double !')
 				self.draw_card(hand_index)
 				self.hands[hand_index][3] *= 2
-				print('DOUBLE')
+				print('La nouvelle main est :', self.hands[hand_index])
 			else:
 				while self.hands[hand_index][0] <= 20 and self.player[0][self.hands[hand_index][0] - 4][dealer_index][soft] == 'H': #keep hitting until player stand
+					print('Hit')
 					self.draw_card(hand_index)
 					soft = 1 if self.hands[hand_index][1] > 0 else 0
-					print('HIT')
+					print('La nouvelle main est :', self.hands[hand_index])
 
 	def dealer_action(self):
 
@@ -204,7 +217,6 @@ class Blackjack:
 
 		while self.dealer_hand[0] < 17 or self.dealer_hits_soft_17 and self.dealer_hand[1] > 0 and self.dealer_hand[0] == 17:
 			self.draw_card_dealer(None)
-			print('dealer hand :', self.dealer_hand)
 
 	def check_winner(self, hand_index):
 		hand_value = self.hands[hand_index][0]
@@ -231,7 +243,7 @@ class Blackjack:
 			self.deal_newhand(self.bet())
 			self.check_blackjack(hand_index)
 
-		self.deal_dealer()
+		self.deal_dealer() #deal dealer
 		self.check_blackjack_dealer()
 
 		for hand_index in range(len(self.hands)):
@@ -241,16 +253,19 @@ class Blackjack:
 
 		for hand_index in range(len(self.hands)):
 			self.bankroll += self.hands[hand_index][3] * self.check_winner(hand_index)
-			print('tu as gagné : ', self.hands[hand_index][3] * self.check_winner(hand_index))
+			print('resultat des courses :', self.hands[hand_index][3] * self.check_winner(hand_index))
+			print(self.bankroll)
 
 	def play_shoe(self, number_of_hands):
-		for _ in range(number_of_hands):
+		for i in range(number_of_hands):
 			if len(self.shoe) < (1 - self.deck_penetration) * (self.num_decks * 52):
 				self.shoe = self.initialize_shoe()  # Reshuffle if penetration is reached
-				print('reshuffle')
 			self.play_round()
+
+			print(f'{i/number_of_hands*100:.2f}% | hands :{i}/{number_of_hands}', end="\r")
+		print('')
 
 if __name__ == '__main__':
 	game = Blackjack(num_decks=6, deck_penetration=0.5, dealer_hits_soft_17=False)
-	game.play_shoe(number_of_hands=10)
+	game.play_shoe(number_of_hands=1)
 	print("Final Bankroll:", game.bankroll)

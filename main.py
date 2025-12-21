@@ -1,4 +1,5 @@
 import random
+from math import floor
 
 #TO DO LIST: self.ask_insurance(), check well working of self.check_blackjack_dealer()
 
@@ -39,12 +40,16 @@ basic_strategy_splits = [
 
 ]
 
-betting_strat = []
+betting_strat = [0, 1, 5, 10, 20, 30, 30, 30, 30, 30] # bet value for true count from 0 to 9
+
+basic_strategy_betting = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+
+insurance_strat = 3
 
 #####===========================================================#####
 
 class Blackjack:
-	def __init__(self, num_decks=6, deck_penetration=0.6, dealer_hits_soft_17=False, split_after_split=True, split_after_aces=True):
+	def __init__(self, num_decks=6, deck_penetration=0.6, dealer_hits_soft_17=False, split_after_split=True, split_after_aces=False):
 		self.num_decks = num_decks
 		self.deck_penetration = deck_penetration
 		self.dealer_hits_soft_17 = dealer_hits_soft_17
@@ -52,7 +57,7 @@ class Blackjack:
 		self.split_after_aces = split_after_aces
 		self.shoe = self.initialize_shoe()
 		self.bankroll = 0
-		self.player = [basic_strategy, basic_strategy_splits, betting_strat, False]
+		self.player = [basic_strategy, basic_strategy_splits, betting_strat, insurance_strat]
 		self.dealer_hand = [0, 0]
 		self.hole_card = 0
 		self.hands = []
@@ -61,7 +66,7 @@ class Blackjack:
 
 	def initialize_shoe(self):
 		shoe = []
-		for _ in range(self.num_decks):
+		for _ in range(4*self.num_decks):
 			for value in range(1, 14):  # 1 to 13
 				if value > 10:
 					shoe.append(10)  # 10, J, Q, K
@@ -70,7 +75,20 @@ class Blackjack:
 				else:
 					shoe.append(value)
 		random.shuffle(shoe)
+		self.count = 0
+		self.num_cards_left = self.num_decks*52
+		self.true_count = 0
 		return shoe
+
+	def update_count(self, card):
+		if card >= 10:
+			self.count += 1
+		elif card <=6:
+			self.count -= 1
+		self.num_cards_left -= 1
+		val = floor(self.count / max(self.num_cards_left/52, 1))
+		print(val)
+		self.true_count = val
 
 	def draw_card(self, hand_index):
 
@@ -88,6 +106,9 @@ class Blackjack:
 				self.hands[hand_index][0] = 100
 		else:
 			self.hands[hand_index][0] += card
+
+		self.update_count(card)
+
 		return card
 
 	def draw_card_dealer(self, card):
@@ -109,10 +130,13 @@ class Blackjack:
 				self.dealer_hand[0] = 100 #100 means bust
 		else:
 			self.dealer_hand[0] += newcard
+
+		self.update_count(newcard)
+
 		return newcard
 
 	def bet(self):
-		return 2 #NEEDS TO BE CHANGED, MUST BE PAIR (for insurance betting)
+		return self.player[2][max(min(9, self.true_count), 0)]
 
 	def deal_newhand(self, bet):
 		self.hands.append([0, 0, False, bet]) #value, ace_count, splittable, bet
@@ -123,8 +147,8 @@ class Blackjack:
 	def ask_insurance(self):
 		self.insurance_bet = 0
 		for hand_index in range(len(self.hands)):
-			if self.player[3] == True:
-				self.insurance_bet += self.hands[hand_index][3]//2
+			if self.true_count >= self.player[3]:
+				self.insurance_bet += self.hands[hand_index][3]/2
 
 	def check_blackjack(self, hand_index):
 		if self.hands[hand_index][0] == 21:
@@ -172,7 +196,6 @@ class Blackjack:
 
 	def player_action(self, hand_index):
 
-
 		if self.hands[hand_index][0] > 0: # removes blackjack and bust cases
 
 			soft = 1 if self.hands[hand_index][1] > 0 else 0
@@ -188,13 +211,21 @@ class Blackjack:
 				if self.player[1][paired - 2][dealer_index][0]:
 					self.split_hand(hand_index, paired)
 
-			if self.hands[hand_index][0] <= 20 and self.player[0][self.hands[hand_index][0] - 4][dealer_index][soft] == 'D': # double action
+			hand_value = self.hands[hand_index][0]
+			if hand_value <= 20:
+				player_action = self.player[0][hand_value - 4][dealer_index][soft]
+
+			if hand_value <= 20 and ( player_action == 'D' or player_action == 'Ds' ): # double action
 				self.draw_card(hand_index)
 				self.hands[hand_index][3] *= 2
 			else:
-				while self.hands[hand_index][0] <= 20 and self.player[0][self.hands[hand_index][0] - 4][dealer_index][soft] == 'H': #keep hitting until player stand
+				while hand_value <= 20 and ( player_action == 'H' or player_action == 'D' ): #keep hitting until player stand
 					self.draw_card(hand_index)
 					soft = 1 if self.hands[hand_index][1] > 0 else 0
+
+					hand_value = self.hands[hand_index][0]
+					if hand_value <= 20:
+						player_action = self.player[0][hand_value - 4][dealer_index][soft]
 
 	def dealer_action(self):
 
@@ -241,15 +272,16 @@ class Blackjack:
 
 	def play_shoe(self, number_of_hands):
 		for i in range(number_of_hands):
-			if len(self.shoe) < (1 - self.deck_penetration) * (self.num_decks * 52):
+			if self.num_cards_left < (1 - self.deck_penetration) * (self.num_decks * 52):
 				self.shoe = self.initialize_shoe()  # Reshuffle if penetration is reached
 			self.play_round()
 
-			print(f'{i/number_of_hands*100:.2f}% | hands :{i}/{number_of_hands}', end="\r")
-
-
+			print(f'     {(i+1)/number_of_hands*100:.2f}%     |     hands :{(i+1)}/{number_of_hands}', end="\r")
+		print('')
 
 if __name__ == '__main__':
-	game = Blackjack(num_decks=6, deck_penetration=0.5, dealer_hits_soft_17=False)
-	game.play_shoe(number_of_hands=100000)
-	print("Final Bankroll:", game.bankroll)
+	num_of_hands = 100000
+	game = Blackjack(num_decks=6, deck_penetration=0.7, dealer_hits_soft_17=False)
+	game.play_shoe(number_of_hands=num_of_hands)
+	bankroll = game.bankroll
+	print(f'Final Bankroll : {bankroll}     |     EV : {bankroll/num_of_hands*100:.2f} %')
