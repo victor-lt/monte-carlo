@@ -82,9 +82,9 @@ class Blackjack:
 
 	def update_count(self, card):
 		if card >= 10:
-			self.count += 1
-		elif card <=6:
 			self.count -= 1
+		elif card <=6:
+			self.count += 1
 		self.num_cards_left -= 1
 		val = floor(self.count / max(self.num_cards_left/52, 1))
 		print(val)
