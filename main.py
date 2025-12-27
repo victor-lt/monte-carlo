@@ -70,7 +70,7 @@ class Blackjack:
 
 ###-------------------------------------------------------------###
 		
-		self.ev_chart = [17*[10*[0]]]
+		self.ev_chart = [17*[10*[3*[None]]]]
 
 	def initialize_shoe(self, true_count):
 		shoe = []
@@ -301,13 +301,20 @@ class Blackjack:
 ###-----------------------------------------------------------------###
 
 	def premade_player_action(self, hand_index, action):
-		if action == 'D' or action == 'Ds':
+		if self.hands[hand_index][1] > 0: # pair of aces case
+			paired = 11
+		else:
+			paired = self.hands[hand_index][0] // 2
+
+		if action == 'Sp':
+			self.hand_split(hand_index, paired)
+		elif action == 'D' or action == 'Ds':
 			self.draw_card(0)
 			self.hands[hand_index][3] *= 2
 		else:
 			self.draw_card(0)
 
-	def play_premade_hand(self, hand):
+	def play_premade_hand(self, hand, action):
 		self.hands = [hand]
 		self.dealer_hand = [0, 0]
 
@@ -318,17 +325,25 @@ class Blackjack:
 
 		self.premade_player_action(0, action)
 
-		self.dealer_action()
+		if action == 'S':
+			self.dealer_action()
+			self.bankroll += self.hands[0][3] * self.check_winner(0)
+		else:
+			for hand_index in self.hands:
+				self.bankroll += self.hands[hand][3]*self.ev_chart[self.hands[hand_index][0]][self.dealer[0]]
 
-		for hand_index in range(len(self.hands)):
-			self.bankroll += self.hands[hand_index][3] * self.check_winner(hand_index)
 
-def sim_premade_hand(self, hand, repetition):
+def sim_premade_hand(self, hand, action, repetition):
 	self.bankroll == 0
+	for _ in range(repetition):
+		self.play_premade_hand(hand, action)
+
+def sim_chart(self, repetition):
+	pass #TO DO
 
 if __name__ == '__main__':
 	num_of_hands = 100000
 	game = Blackjack(num_decks=6, deck_penetration=0.7, dealer_hits_soft_17=False)
-	game.play_shoe(number_of_hands=num_of_hands)
+	#game.play_shoe(number_of_hands=num_of_hands)
 	bankroll = game.bankroll
 	print(f'Final Bankroll : {bankroll}     |     EV : {bankroll/num_of_hands*100:.2f} %')
