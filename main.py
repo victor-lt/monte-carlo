@@ -55,16 +55,24 @@ class Blackjack:
 		self.dealer_hits_soft_17 = dealer_hits_soft_17
 		self.split_after_split = split_after_split
 		self.split_after_aces = split_after_aces
-		self.shoe = self.initialize_shoe()
+		self.shoe = []
 		self.bankroll = 0
 		self.player = [basic_strategy, basic_strategy_splits, betting_strat, insurance_strat]
 		self.dealer_hand = [0, 0]
 		self.hole_card = 0
 		self.hands = []
 		self.starting_num_hands = 2
-		self.max_num_hands = 6 #TO BE CHANGED
+		self.max_num_hands = 6
 
-	def initialize_shoe(self):
+		self.count = 0
+		self.num_cards_left = 0
+		self.true_count = 0
+
+###-------------------------------------------------------------###
+		
+		self.ev_chart = [17*[10*[0]]]
+
+	def initialize_shoe(self, true_count):
 		shoe = []
 		for _ in range(4*self.num_decks):
 			for value in range(1, 14):  # 1 to 13
@@ -74,10 +82,21 @@ class Blackjack:
 					shoe.append(11)  # Ace is considered 11
 				else:
 					shoe.append(value)
+
+		tcount = abs(true_count)
+		for _ in range(tcount): #parcours du sabot pour ajuster le compte
+			i = 0
+			j = 0
+			while i < self.num_decks:
+				if (true_count >= 0 and shoe[j] >=2 and shoe[j] <= 6) or (true_count <= 0 and shoe[j] >= 10):
+					shoe.pop(j)
+					i += 1
+				j += 1
+
 		random.shuffle(shoe)
-		self.count = 0
-		self.num_cards_left = self.num_decks*52
-		self.true_count = 0
+		self.count = true_count*self.num_decks
+		self.num_cards_left = self.num_decks*(52 - true_count)
+		self.true_count = true_count
 		return shoe
 
 	def update_count(self, card):
@@ -273,11 +292,39 @@ class Blackjack:
 	def play_shoe(self, number_of_hands):
 		for i in range(number_of_hands):
 			if self.num_cards_left < (1 - self.deck_penetration) * (self.num_decks * 52):
-				self.shoe = self.initialize_shoe()  # Reshuffle if penetration is reached
+				self.shoe = self.initialize_shoe(0)  # Reshuffle if penetration is reached
 			self.play_round()
 
 			print(f'     {(i+1)/number_of_hands*100:.2f}%     |     hands :{(i+1)}/{number_of_hands}', end="\r")
 		print('')
+
+###-----------------------------------------------------------------###
+
+	def premade_player_action(self, hand_index, action):
+		if action == 'D' or action == 'Ds':
+			self.draw_card(0)
+			self.hands[hand_index][3] *= 2
+		else:
+			self.draw_card(0)
+
+	def play_premade_hand(self, hand):
+		self.hands = [hand]
+		self.dealer_hand = [0, 0]
+
+		self.check_blackjack(0)
+
+		self.deal_dealer() #deal dealer
+		self.check_blackjack_dealer()
+
+		self.premade_player_action(0, action)
+
+		self.dealer_action()
+
+		for hand_index in range(len(self.hands)):
+			self.bankroll += self.hands[hand_index][3] * self.check_winner(hand_index)
+
+def sim_premade_hand(self, hand, repetition):
+	self.bankroll == 0
 
 if __name__ == '__main__':
 	num_of_hands = 100000
