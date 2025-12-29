@@ -325,12 +325,12 @@ class Blackjack:
 
 		self.premade_player_action(0, action)
 
-		if action == 'S':
-			self.dealer_action()
-			self.bankroll += self.hands[0][3] * self.check_winner(0)
-		else:
+		if action == 'Sp' or action == 'S':
 			for hand_index in self.hands:
 				self.bankroll += self.hands[hand][3]*self.ev_chart[self.hands[hand_index][0]][self.dealer[0]]
+		else:
+			self.dealer_action()
+			self.bankroll += self.hands[0][3] * self.check_winner(0)
 
 
 def sim_premade_hand(self, hand, action, repetition):
