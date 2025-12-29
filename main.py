@@ -46,6 +46,8 @@ basic_strategy_betting = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
 insurance_strat = 3
 
+ev_chart = [17*[10*[{}, {}]]]
+
 #####===========================================================#####
 
 class Blackjack:
@@ -70,7 +72,7 @@ class Blackjack:
 
 ###-------------------------------------------------------------###
 		
-		self.ev_chart = [17*[10*[3*[None]]]]
+		self.ev_chart = ev_chart
 
 	def initialize_shoe(self, true_count):
 		shoe = []
@@ -189,8 +191,8 @@ class Blackjack:
 			else:
 				self.bankroll -= self.insurance_bet
 
-	def deal_dealer(self):
-		self.draw_card_dealer(None)
+	def deal_dealer(self, card):
+		self.draw_card_dealer(card)
 		self.hole_card = self.shoe.pop()
 
 	def split_hand(self, hand_index, paired):
@@ -278,7 +280,7 @@ class Blackjack:
 			self.deal_newhand(self.bet())
 			self.check_blackjack(hand_index)
 
-		self.deal_dealer() #deal dealer
+		self.deal_dealer(None) #deal dealer
 		self.check_blackjack_dealer()
 
 		for hand_index in range(len(self.hands)):
@@ -297,6 +299,7 @@ class Blackjack:
 
 			print(f'     {(i+1)/number_of_hands*100:.2f}%     |     hands :{(i+1)}/{number_of_hands}', end="\r")
 		print('')
+		print(f'Final Bankroll : {self.bankroll}     |     EV : {self.bankroll/number_of_hands*100:.2f} %')
 
 ###-----------------------------------------------------------------###
 
@@ -314,13 +317,14 @@ class Blackjack:
 		else:
 			self.draw_card(0)
 
-	def play_premade_hand(self, hand, action):
-		self.hands = [hand]
+	def play_premade_hand(self, player_hand, dealer_card, action, true_count):
+		self.shoe = self.initialize_shoe(true_count)
+		self.hands = [player_hand]
 		self.dealer_hand = [0, 0]
 
 		self.check_blackjack(0)
 
-		self.deal_dealer() #deal dealer
+		self.deal_dealer(dealer_card) #deal dealer
 		self.check_blackjack_dealer()
 
 		self.premade_player_action(0, action)
@@ -333,17 +337,27 @@ class Blackjack:
 			self.bankroll += self.hands[0][3] * self.check_winner(0)
 
 
-def sim_premade_hand(self, hand, action, repetition):
-	self.bankroll == 0
-	for _ in range(repetition):
-		self.play_premade_hand(hand, action)
+	def sim_rounds(self, player_hand, dealer_card, action, true_count, repetition):
+		self.bankroll == 0
+		for _ in range(repetition):
+			self.play_premade_hand(player_hand, dealer_card, action, true_count)
+		ev_chart[player_hand[0] - 4][dealer_card - 2][player_hand[1]][true_count][action] == self.bankroll / repetition
 
-def sim_chart(self, repetition):
-	pass #TO DO
+	def sim_chart(self, repetition):
+		for true_count in range(-2,6):
+			for player_value in range(20, 3, -1):
+				for dealer_card in range(11, 1, -1):
+					for soft_value in range(2):
+						ev_chart[player_value - 4][dealer_card - 2][soft_value][true_count] == {}
+						for action in ['D', 'H', 'S']:
+							sim_rounds([player_hand, 1, False, 1], dealer_hand, action, true_count)
+							sim_rounds([player_hand, 0, False, 1], dealer_hand, action, true_count)
+
+		print(ev_chart)
+
 
 if __name__ == '__main__':
 	num_of_hands = 100000
 	game = Blackjack(num_decks=6, deck_penetration=0.7, dealer_hits_soft_17=False)
 	#game.play_shoe(number_of_hands=num_of_hands)
-	bankroll = game.bankroll
-	print(f'Final Bankroll : {bankroll}     |     EV : {bankroll/num_of_hands*100:.2f} %')
+	game.sim_chart(10)
