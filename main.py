@@ -310,15 +310,17 @@ class Blackjack:
 
 		if action == 'Sp':
 			self.hand_split(hand_index, paired)
-		elif action == 'D' or action == 'Ds':
-			self.draw_card(0)
+		elif action == 'D':
+			self.draw_card(hand_index)
 			self.hands[hand_index][3] *= 2
-		else:
-			self.draw_card(0)
+		elif action == 'H':
+			self.draw_card(hand_index)
+		else: #stand case
+			pass
 
 	def play_premade_hand(self, player_hand, dealer_card, action, true_count):
 		self.shoe = self.initialize_shoe(true_count)
-		self.hands = [player_hand]
+		self.hands = [player_hand.copy()]
 		self.dealer_hand = [0, 0]
 
 		self.check_blackjack(0)
@@ -330,28 +332,36 @@ class Blackjack:
 		else:
 			self.premade_player_action(0, action)
 
-			if action == 'Sp' or action == 'S':
-				for hand_index in self.hands:
-					self.bankroll += self.hands[hand][3]*self.ev_chart[self.hands[hand_index][0]][self.dealer[0]]
+			if action == 'Sp':
+				for hand_index in range(len(self.hands)):
+					hand = self.hands[hand_index]
+					self.bankroll += hand[3]*self.ev_chart[hand[0] - 4][self.dealer_hand[0] - 2][hand[1]][true_count][1]
 			else:
 				self.dealer_action()
 				self.bankroll += self.hands[0][3] * self.check_winner(0)
 
 
 	def sim_rounds(self, player_hand, dealer_card, action, true_count, repetition):
-		self.bankroll == 0
+		self.bankroll = 0
 		for _ in range(repetition):
 			self.play_premade_hand(player_hand, dealer_card, action, true_count)
-		self.ev_chart[player_hand[0] - 4][dealer_card - 2][player_hand[1]][true_count][action] = self.bankroll / repetition
+		self.ev[action] = self.bankroll / repetition
 
 	def sim_chart(self, repetition):
-		for true_count in range(-2,6):
+		for true_count in range(0,2):
 			for player_value in range(20, 3, -1):
 				for dealer_card in range(11, 1, -1):
 					for soft_value in range(2):
-						self.ev_chart[player_value - 4][dealer_card - 2][soft_value][true_count] = {}
+						self.ev = {}
 						for action in ['D', 'H', 'S']:
 							self.sim_rounds([player_value, soft_value, False, 1], dealer_card, action, true_count, repetition)
+						maxi = ['D', self.ev['D']]
+						if self.ev['H'] > maxi[1]:
+							maxi = ['H', self.ev['H']]
+						if self.ev['S'] > maxi[1]:
+							maxi = ['S', self.ev['S']]
+						self.ev_chart[player_value - 4][dealer_card - 2][soft_value][true_count] = maxi
+
 
 		print(self.ev_chart)
 
