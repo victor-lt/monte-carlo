@@ -46,7 +46,7 @@ basic_strategy_betting = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
 insurance_strat = 3
 
-ev_chart = [17*[10*[{}, {}]]]
+ev_chart = 17*[10*[[{}, {}]]]
 
 #####===========================================================#####
 
@@ -108,7 +108,6 @@ class Blackjack:
 			self.count += 1
 		self.num_cards_left -= 1
 		val = floor(self.count / max(self.num_cards_left/52, 1))
-		print(val)
 		self.true_count = val
 
 	def draw_card(self, hand_index):
@@ -326,34 +325,35 @@ class Blackjack:
 
 		self.deal_dealer(dealer_card) #deal dealer
 		self.check_blackjack_dealer()
-
-		self.premade_player_action(0, action)
-
-		if action == 'Sp' or action == 'S':
-			for hand_index in self.hands:
-				self.bankroll += self.hands[hand][3]*self.ev_chart[self.hands[hand_index][0]][self.dealer[0]]
+		if self.hands[0][0] == 100:
+			self.bankroll -= self.hands[0][3]
 		else:
-			self.dealer_action()
-			self.bankroll += self.hands[0][3] * self.check_winner(0)
+			self.premade_player_action(0, action)
+
+			if action == 'Sp' or action == 'S':
+				for hand_index in self.hands:
+					self.bankroll += self.hands[hand][3]*self.ev_chart[self.hands[hand_index][0]][self.dealer[0]]
+			else:
+				self.dealer_action()
+				self.bankroll += self.hands[0][3] * self.check_winner(0)
 
 
 	def sim_rounds(self, player_hand, dealer_card, action, true_count, repetition):
 		self.bankroll == 0
 		for _ in range(repetition):
 			self.play_premade_hand(player_hand, dealer_card, action, true_count)
-		ev_chart[player_hand[0] - 4][dealer_card - 2][player_hand[1]][true_count][action] == self.bankroll / repetition
+		self.ev_chart[player_hand[0] - 4][dealer_card - 2][player_hand[1]][true_count][action] = self.bankroll / repetition
 
 	def sim_chart(self, repetition):
 		for true_count in range(-2,6):
 			for player_value in range(20, 3, -1):
 				for dealer_card in range(11, 1, -1):
 					for soft_value in range(2):
-						ev_chart[player_value - 4][dealer_card - 2][soft_value][true_count] == {}
+						self.ev_chart[player_value - 4][dealer_card - 2][soft_value][true_count] = {}
 						for action in ['D', 'H', 'S']:
-							sim_rounds([player_hand, 1, False, 1], dealer_hand, action, true_count)
-							sim_rounds([player_hand, 0, False, 1], dealer_hand, action, true_count)
+							self.sim_rounds([player_value, soft_value, False, 1], dealer_card, action, true_count, repetition)
 
-		print(ev_chart)
+		print(self.ev_chart)
 
 
 if __name__ == '__main__':
