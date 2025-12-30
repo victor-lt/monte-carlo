@@ -347,8 +347,10 @@ class Blackjack:
 			self.play_premade_hand(player_hand, dealer_card, action, true_count)
 		self.ev[action] = self.bankroll / repetition
 
-	def sim_chart(self, repetition):
-		for true_count in range(0,2):
+	def sim_chart(self, repetition, true_count_range):
+		sim_number = len(true_count_range) * 17 * 10 * 2 
+		sim_done = 0
+		for true_count in true_count_range:
 			for player_value in range(20, 3, -1):
 				for dealer_card in range(11, 1, -1):
 					for soft_value in range(2):
@@ -362,6 +364,9 @@ class Blackjack:
 							maxi = ['S', self.ev['S']]
 						self.ev_chart[player_value - 4][dealer_card - 2][soft_value][true_count] = maxi
 
+						sim_done += 1
+						print(f'     {sim_done/sim_number*100:.2f}%     |     hands :{sim_done}/{sim_number}', end="\r")
+
 
 		print(self.ev_chart)
 
@@ -370,4 +375,4 @@ if __name__ == '__main__':
 	num_of_hands = 100000
 	game = Blackjack(num_decks=6, deck_penetration=0.7, dealer_hits_soft_17=False)
 	#game.play_shoe(number_of_hands=num_of_hands)
-	game.sim_chart(10)
+	game.sim_chart(10, [0,1,2,3])
