@@ -1,5 +1,6 @@
 import random
 from math import floor
+import csv
 
 #TO DO LIST: self.ask_insurance(), check well working of self.check_blackjack_dealer()
 
@@ -47,6 +48,17 @@ basic_strategy_betting = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 insurance_strat = 3
 
 ev_chart = [[[{}, {}] for _ in range(10)] for _ in range(17)]
+
+#####================= WRITING DATA BLOC ===================#####
+
+def write_simple_ev_chart(chart, true_count, repetition):
+	data_hard = [[element[0][true_count] for element in row] for row in chart]
+	data_soft = [[element[1][true_count] for element in row] for row in chart]
+	data = data_hard + data_soft
+	file = open('simple_strategy chart' + str(true_count) + '-rep=' + str(repetition) + '.csv', 'w', newline='')
+	writer = csv.writer(file)
+	writer.writerows(data)
+
 
 #####===========================================================#####
 
@@ -353,16 +365,16 @@ class Blackjack:
 
 	def sim_actions(self, player_hand, dealer_card, true_count, repetition):
 		self.sim_done = 0
-		self.sim_number = repetition
-		ev = {}
+		self.sim_number = repetition * 3 #TO BE REMOVED
+		self.ev = {}
 		for action in ['D', 'H', 'S']:
 			self.sim_rounds(player_hand, dealer_card, action, true_count, repetition)
-		maxi = ['D', ev['D']]
-		if ev['H'] > maxi[1]:
-			maxi = ['H', ev['H']]
-		if ev['S'] > maxi[1]:
-			maxi = ['S', ev['S']]
-		return maxi
+		maxi = ['D', self.ev['D']]
+		if self.ev['H'] > maxi[1]:
+			maxi = ['H', self.ev['H']]
+		if self.ev['S'] > maxi[1]:
+			maxi = ['S', self.ev['S']]
+		self.ev_chart[player_hand[0] - 4][dealer_card - 2][player_hand[1]][true_count] = maxi
 
 	def sim_chart(self, repetition, true_count_range):
 		self.sim_number = len(true_count_range) * 17 * 10 * 2 * repetition * 3 
@@ -376,7 +388,10 @@ class Blackjack:
 
 
 if __name__ == '__main__':
-	num_of_hands = 100000
+	repetition = 100000
+	true_count = 0
 	game = Blackjack(num_decks=6, deck_penetration=0.7, dealer_hits_soft_17=False)
 	#game.play_shoe(number_of_hands=num_of_hands)
-	game.sim_actions([15, 0, False, 1], 5, 0, 1000000)
+	game.sim_actions([8, 0, False, 1], 2, true_count, 100000)
+	print(game.ev_chart)
+	#write_simple_ev_chart(game.ev_chart, true_count, repetition)
