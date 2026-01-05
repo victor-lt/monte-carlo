@@ -23,6 +23,7 @@ basic_strategy = [
 [[ 'S', 'Ds'],[ 'S', 'Ds'],[ 'S', 'Ds'],[ 'S', 'Ds'],[ 'S', 'Ds'], [ 'S', 'S'],[ 'S', 'S'],[ 'S', 'H'],[ 'S', 'H'],[ 'S', 'H']], #18
 [[ 'S', 'S'],[ 'S', 'S'],[ 'S', 'S'],[ 'S', 'S'],[ 'S', 'Ds'], [ 'S', 'S'],[ 'S', 'S'],[ 'S', 'S'],[ 'S', 'S'],[ 'S', 'S']], #19
 [[ 'S', 'S'],[ 'S', 'S'],[ 'S', 'S'],[ 'S', 'S'],[ 'S', 'S'], [ 'S', 'S'],[ 'S', 'S'],[ 'S', 'S'],[ 'S', 'S'],[ 'S', 'S']], #20
+[[ 'S', 'S'],[ 'S', 'S'],[ 'S', 'S'],[ 'S', 'S'],[ 'S', 'S'], [ 'S', 'S'],[ 'S', 'S'],[ 'S', 'S'],[ 'S', 'S'],[ 'S', 'S']], #21
 
 ]
 
@@ -47,7 +48,7 @@ basic_strategy_betting = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
 insurance_strat = 3
 
-ev_chart = [[[{}, {}] for _ in range(10)] for _ in range(17)]
+ev_chart = [[[{}, {}] for _ in range(10)] for _ in range(18)]
 
 #####================= WRITING DATA BLOC ===================#####
 
@@ -339,14 +340,20 @@ class Blackjack:
 
 		self.deal_dealer(dealer_card) #deal dealer
 		self.check_blackjack_dealer()
+
 		if self.hands[0][0] == 100:
+			self.bankroll -= self.hands[0][3]
+		elif self.hands[0][0] == -2:
 			self.bankroll -= self.hands[0][3]
 		else:
 			self.premade_player_action(0, action)
 
-			if action == 'Sp':
+			if self.hands[0][0] == 100:
+				self.bankroll -= self.hands[0][3]
+			elif action in ['Sp', 'H', 'D']:
 				for hand_index in range(len(self.hands)):
 					hand = self.hands[hand_index]
+
 					self.bankroll += hand[3]*self.ev_chart[hand[0] - 4][self.dealer_hand[0] - 2][hand[1]][true_count][1]
 			else:
 				self.dealer_action()
@@ -364,8 +371,8 @@ class Blackjack:
 		self.ev[action] = self.bankroll / repetition
 
 	def sim_actions(self, player_hand, dealer_card, true_count, repetition):
-		self.sim_done = 0
-		self.sim_number = repetition * 3 #TO BE REMOVED
+		#self.sim_done = 0
+		#self.sim_number = repetition * 3 #TO BE REMOVED
 		self.ev = {}
 		for action in ['D', 'H', 'S']:
 			self.sim_rounds(player_hand, dealer_card, action, true_count, repetition)
@@ -377,21 +384,23 @@ class Blackjack:
 		self.ev_chart[player_hand[0] - 4][dealer_card - 2][player_hand[1]][true_count] = maxi
 
 	def sim_chart(self, repetition, true_count_range):
-		self.sim_number = len(true_count_range) * 17 * 10 * 2 * repetition * 3 
+		self.sim_done = 0
+		self.sim_number = len(true_count_range) * 18 * 10 * 2 * repetition * 3 
 		for true_count in true_count_range:
-			for player_value in range(20, 3, -1):
-				for dealer_card in range(11, 1, -1):
-					for soft_value in range(2):
-						self.ev_chart[player_value - 4][dealer_card - 2][soft_value][true_count] = self.sim_actions([player_value, soft_value, False, 1], dealer_card, true_count, repetition)
+			for soft_value in range(2):
+				for player_value in range(21, 3, -1):
+					for dealer_card in range(11, 1, -1):
+							self.sim_actions([player_value, soft_value, False, 1], dealer_card, true_count, repetition)
 
 		print(self.ev_chart)
 
 
 if __name__ == '__main__':
-	repetition = 100000
-	true_count = 0
+	repetition = 100
+	true_count = 1
 	game = Blackjack(num_decks=6, deck_penetration=0.7, dealer_hits_soft_17=False)
-	#game.play_shoe(number_of_hands=num_of_hands)
-	game.sim_actions([8, 0, False, 1], 2, true_count, 100000)
+	#game.play_shoe(number_of_hands=repetition)
+	#game.sim_actions([16, 0, False, 1], 10, true_count, 1000)
+	game.sim_chart(repetition, [true_count])
 	print(game.ev_chart)
 	#write_simple_ev_chart(game.ev_chart, true_count, repetition)
